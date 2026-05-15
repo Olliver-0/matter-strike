@@ -2,7 +2,7 @@
 
 **Matter Strike** é um jogo tático de artilharia 2D por turnos que redefine o gênero ao substituir a mira analógica tradicional por comandos matemáticos diretos e lógica de física de materiais. Desenvolvido na **Godot Engine**, o projeto desafia os jogadores a dominarem o plano cartesiano e as fórmulas de densidade para vencer duelos de precisão.
 
-![Trajetória no Plano Cartesiano](https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80) _(Substitua pelo link da imagem real do seu gameplay)_
+![Trajetória no Plano Cartesiano](https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80)
 
 ## 🚀 O Conceito
 
@@ -45,5 +45,5 @@ Após uma falha catastrófica no núcleo da Estação Arquimedes, o setor princi
 
 1. Clone este repositório em sua máquina local:
    ```bash
-   git clone [https://github.com/seu-usuario/matter-strike.git](https://github.com/seu-usuario/matter-strike.git)
+   git clone [https://github.com/Olliver-0/matter-strike.git](https://github.com/Olliver-0/matter-strike)
    ```
