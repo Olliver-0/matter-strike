@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cx6q7lyfieryq"]
+
+[ext_resource type="Script" uid="uid://sj877bwvcqdk" path="res://BallisticsCalculator.gd" id="1_3kmef"]
+[ext_resource type="PackedScene" uid="uid://qdeswvsgpa2q" path="res://Projectile.tscn" id="2_p5nm7"]
+
+[node name="BallisticsCalculator" type="Node2D" unique_id=1592306824]
+script = ExtResource("1_3kmef")
+projectile_scene = ExtResource("2_p5nm7")
+
+[node name="MuzzleMarker" type="Marker2D" parent="." unique_id=1839691986]
+position = Vector2(100, 400)
