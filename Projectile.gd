@@ -16,6 +16,7 @@ var mass: float = 1.0
 var volume: float = 1.0
 var custom_gravity: float = 980.0
 var wind_force: float = 0.0
+var lifespan: float = 10.0
 
 # ==========================================
 # 3. INICIALIZAÇÃO E ESCALA VISUAL
@@ -54,6 +55,14 @@ func _physics_process(delta: float) -> void:
 	
 	# Movimentação do objeto no espaço cartesiano (Translação)
 	global_position += velocity * delta
+	
+	# --- SISTEMA ANTI SOFT-LOCK ---
+	lifespan -= delta # Desconta a fração de segundo do relógio
+	
+	if lifespan <= 0.0:
+		print(">>> O projétil se perdeu no espaço. Forçando fim de turno!")
+		projectile_impacted.emit() # Passa a vez
+		queue_free() # Destrói a bala
 
 # ==========================================
 # 5. DETECÇÃO DE COLISÃO E CÁLCULO DE DANO
