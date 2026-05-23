@@ -7,7 +7,7 @@ const MATERIALS = {
 	"LEAD":  {"density": 11.34, "hud_color": Color(0.30, 0.35, 0.40)}
 }
 
-var current_material: String = "IRON"
+var current_material: String = "CORK"
 
 func get_current_properties() -> Dictionary:
 	return MATERIALS[current_material]

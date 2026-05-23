@@ -18,6 +18,10 @@ config/icon="res://icon.svg"
 
 MaterialsTable="*uid://b6uoayaul7v86"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/GDTerminal/plugin.cfg")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
