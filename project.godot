@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 MaterialsTable="*uid://b6uoayaul7v86"
 GameState="*uid://c2tcluviyhprt"
 
+[display]
+
+window/size/viewport_height=850
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
