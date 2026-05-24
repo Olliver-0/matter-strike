@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://0p3r435oqmfa"]
+
+[ext_resource type="Script" uid="uid://ilaf0w23pqoe" path="res://hud.gd" id="1_37p78"]
+
+[node name="HUD" type="CanvasLayer" unique_id=1963854171]
+script = ExtResource("1_37p78")
+
+[node name="LeoHPBar" type="ProgressBar" parent="." unique_id=569235229]
+offset_left = 60.0
+offset_top = 409.0
+offset_right = 119.0
+offset_bottom = 436.0
+
+[node name="SophieHPBar" type="ProgressBar" parent="." unique_id=1896308650]
+offset_left = 1033.0
+offset_top = 420.0
+offset_right = 1076.0
+offset_bottom = 447.0
+
+[node name="EnergyBar" type="ProgressBar" parent="." unique_id=1272190674]
+offset_left = 547.0
+offset_top = 63.0
+offset_right = 586.0
+offset_bottom = 90.0
+
+[node name="MassSlider" type="HSlider" parent="." unique_id=695155100]
+offset_left = 538.0
+offset_top = 101.0
+offset_right = 594.0
+offset_bottom = 117.0
+
+[node name="VolumeLabel" type="Label" parent="." unique_id=282988866]
+offset_left = 545.0
+offset_top = 134.0
+offset_right = 585.0
+offset_bottom = 157.0
+
+[node name="HPLeo" type="TextEdit" parent="." unique_id=2127083808]
+offset_left = 57.0
+offset_top = 364.0
+offset_right = 123.0
+offset_bottom = 406.0
+text = "HP Léo"
+
+[node name="HPSophie" type="TextEdit" parent="." unique_id=319450044]
+offset_left = 1014.0
+offset_top = 386.0
+offset_right = 1101.0
+offset_bottom = 418.0
+text = "HP Sophie"

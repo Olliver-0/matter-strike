@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://5k8lf26tmvrd" path="res://engineer.tscn" id="1_fvluo"]
 [ext_resource type="Script" uid="uid://cdw824okdgt7s" path="res://level_manager.gd" id="1_k1abw"]
 [ext_resource type="PackedScene" uid="uid://dua0cbx2ekiht" path="res://terminal_ui.tscn" id="4_5x5fn"]
+[ext_resource type="PackedScene" uid="uid://0p3r435oqmfa" path="res://hud.tscn" id="5_5x5fn"]
 
 [node name="LevelManager" type="Node" unique_id=1567176229]
 script = ExtResource("1_k1abw")
@@ -26,3 +27,5 @@ theme_color = Color(0.039312236, 0.7448303, 0.80724716, 1)
 logical_position = Vector2(17, 11)
 
 [node name="TerminalUI" parent="." unique_id=44111674 instance=ExtResource("4_5x5fn")]
+
+[node name="HUD" parent="." unique_id=1963854171 instance=ExtResource("5_5x5fn")]
