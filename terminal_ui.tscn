@@ -42,3 +42,11 @@ offset_top = 400.0
 offset_right = 594.0
 offset_bottom = 431.0
 text = "Passar Turno"
+
+[node name="BtnFire" type="Button" parent="." unique_id=472430466]
+layout_mode = 0
+offset_left = 515.0
+offset_top = 356.0
+offset_right = 568.0
+offset_bottom = 387.0
+text = "Atirar"

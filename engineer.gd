@@ -1,4 +1,4 @@
-class_name Engineer extends Node2D
+class_name Engineer extends StaticBody2D
 
 signal movement_resolved(final_coords: Vector2)
 
@@ -45,3 +45,14 @@ func attempt_move(target_grid_pos: Vector2) -> void:
 		tween.finished.connect(func(): movement_resolved.emit(logical_position))
 	else:
 		push_warning("Energia insuficiente para translação de coordenadas.")
+		
+var health: float = 100.0
+
+func take_damage(amount: float) -> void:
+	health -= amount
+	print("Engenheiro ", player_id, " foi atingido! Sofreu ", amount, " de dano.")
+	print("Vida atual: ", health)
+	
+	if health <= 0.0:
+		print("Engenheiro ", player_id, " FOI ELIMINADO!")
+		queue_free()

@@ -18,24 +18,6 @@ signal turn_resolved
 var current_gravity: float = 980.0
 var current_wind: float = -350.0
 
-
-# ==========================================
-# 2. AMBIENTE DE TESTE (Sandbox Local)
-# ==========================================
-
-# TODO: Deletar esta função quando o HUD e o personagem do parceiro estiverem prontos.
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var clicked_coordinate = get_global_mouse_position()
-		var test_start_position: Vector2 = muzzle_marker.global_position
-		
-		# Simulando o input do terminal do jogador
-		var test_input_type: String = "MASS" 
-		var test_input_value: float = 50.0
-		
-		dispatch_shot(test_start_position, clicked_coordinate, test_input_type, test_input_value)
-
-
 # ==========================================
 # 3. API PÚBLICA (CONTRATO COM A INTERFACE)
 # ==========================================
@@ -45,7 +27,7 @@ func _unhandled_input(event: InputEvent) -> void:
 # target_coordinate: a coordenada (X, Y) digitada no terminal.
 # input_type: "MASS" ou "VOLUME" (dependendo de qual barra o jogador ajustou).
 # input_value: o número final da barra.
-func dispatch_shot(start_position: Vector2, target_coordinate: Vector2, input_type: String, input_value: float) -> void:
+func dispatch_shot(shooter: Node2D, target_coordinate: Vector2, input_type: String, input_value: float) -> void:
 	var material_data = MaterialsTable.get_current_properties()
 	var current_density: float = material_data["density"]
 	
@@ -73,7 +55,7 @@ func dispatch_shot(start_position: Vector2, target_coordinate: Vector2, input_ty
 	print("Massa Final: ", final_mass, " | Volume Final: ", final_volume)
 	
 	# Repassa os dados validados para o sistema de física criar o objeto
-	fire_shot(start_position, target_coordinate, final_mass, final_volume)
+	fire_shot(shooter, target_coordinate, final_mass, final_volume)
 
 
 # CONTRATO COM A INTERFACE: Chamar esta função continuamente enquanto o jogador arrasta
@@ -88,26 +70,24 @@ func calculate_energy_cost(preview_mass: float) -> float:
 # ==========================================
 
 # Cria a bala no mapa, injeta a física e atira.
-func fire_shot(start_position: Vector2, target_coordinate: Vector2, input_mass: float, input_volume: float) -> void:
-	if not projectile_scene:
-		push_error("ERRO: Você esqueceu de arrastar a cena do Projétil para o Inspector da Calculadora!")
-		return
+func fire_shot(shooter: Node2D, target_coordinate: Vector2, input_mass: float, input_volume: float) -> void:
+	if not projectile_scene: return
+	
+	# Descobre a posição de saída extraindo-a do atirador que foi recebido
+	var start_position = shooter.global_position
 	
 	var calculated_velocity = _calculate_launch_velocity(start_position, target_coordinate, input_mass, input_volume)
 	
 	var projectile_instance = projectile_scene.instantiate() as Area2D
 	get_tree().current_scene.add_child(projectile_instance)
-	
-	# Conecta o sinal do impacto da bala à função de repasse desta Calculadora
+	projectile_instance.body_entered.connect(projectile_instance._on_body_entered)
 	projectile_instance.projectile_impacted.connect(_on_projectile_impacted)
 	
+	# Inicializa passando o 'shooter' no final
 	projectile_instance.initialize(
-		start_position,
-		calculated_velocity,
-		input_mass,
-		input_volume,
-		current_wind,
-		current_gravity
+		start_position, calculated_velocity, input_mass,
+		input_volume, current_wind, current_gravity,
+		shooter # <--- ENTREGA O DONO PARA A BALA AQUI
 	)
 
 # Transforma coordenadas puras em um vetor de velocidade física (com punição por inércia/peso)

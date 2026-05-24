@@ -30,10 +30,10 @@ offset_right = 594.0
 offset_bottom = 117.0
 
 [node name="VolumeLabel" type="Label" parent="." unique_id=282988866]
-offset_left = 545.0
-offset_top = 134.0
-offset_right = 585.0
-offset_bottom = 157.0
+offset_left = 551.0
+offset_top = 212.0
+offset_right = 591.0
+offset_bottom = 235.0
 
 [node name="HPLeo" type="TextEdit" parent="." unique_id=2127083808]
 offset_left = 57.0
@@ -48,3 +48,21 @@ offset_top = 386.0
 offset_right = 1101.0
 offset_bottom = 418.0
 text = "HP Sophie"
+
+[node name="MaterialDropdown" type="OptionButton" parent="." unique_id=1388935587]
+offset_left = 158.0
+offset_top = 56.0
+offset_right = 235.0
+offset_bottom = 76.0
+
+[node name="VolumeSlider" type="HSlider" parent="." unique_id=307904602]
+offset_left = 540.0
+offset_top = 173.0
+offset_right = 601.0
+offset_bottom = 189.0
+
+[node name="MassLabel" type="Label" parent="." unique_id=575378822]
+offset_left = 552.0
+offset_top = 121.0
+offset_right = 592.0
+offset_bottom = 144.0

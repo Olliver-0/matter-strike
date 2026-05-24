@@ -17,19 +17,25 @@ var volume: float = 1.0
 var custom_gravity: float = 980.0
 var wind_force: float = 0.0
 var lifespan: float = 10.0
+var shooter_node: Node = null
+
+func _ready() -> void:
+	# Liga o "radar" nativo de colisões do Godot à sua função matemática!
+	body_entered.connect(_on_body_entered)
 
 # ==========================================
 # 3. INICIALIZAÇÃO E ESCALA VISUAL
 # ==========================================
 
 # Injeta os dados balísticos e ambientais para que o projétil inicie a sua trajetória de voo.
-func initialize(start_position: Vector2, initial_velocity: Vector2, p_mass: float, p_volume: float, p_wind: float, p_gravity: float) -> void:
+func initialize(start_position: Vector2, initial_velocity: Vector2, p_mass: float, p_volume: float, p_wind: float, p_gravity: float, p_shooter: Node) -> void:
 	global_position = start_position
 	velocity = initial_velocity
 	mass = p_mass
 	volume = p_volume
 	wind_force = p_wind
 	custom_gravity = p_gravity
+	shooter_node = p_shooter
 	
 	# --- ESCALA VISUAL DINÂMICA ---
 	# Volume de Referência representa a escala 1.0 original da imagem e da hitbox.
@@ -69,6 +75,9 @@ func _physics_process(delta: float) -> void:
 # ==========================================
 
 func _on_body_entered(body: Node) -> void:
+	# SE O CORPO FOR O ATIRADOR, IGNORA-O COMPLETAMENTE E CONTINUA A VOAR!
+	if body == shooter_node:
+		return
 	# 1. Calcula a velocidade escalar total (módulo do vetor) no momento exato do impacto.
 	var impact_speed: float = velocity.length()
 	

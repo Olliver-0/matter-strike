@@ -2,7 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ynqq03ek6iy6" path="res://engineer.gd" id="1_y47ya"]
 
-[node name="Engineer" type="Node2D" unique_id=2074585821]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y47ya"]
+size = Vector2(40, 40)
+
+[node name="Engineer" type="StaticBody2D" unique_id=949635895]
 script = ExtResource("1_y47ya")
 
 [node name="VisualBody" type="ColorRect" parent="." unique_id=1176650629]
@@ -10,3 +13,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="EnergyGlow" type="PointLight2D" parent="." unique_id=1372638071]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=45648851]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_y47ya")
