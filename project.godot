@@ -17,6 +17,11 @@ config/icon="res://icon.svg"
 [autoload]
 
 MaterialsTable="*uid://b6uoayaul7v86"
+GameState="*uid://c2tcluviyhprt"
+
+[display]
+
+window/size/viewport_height=850
 
 [editor_plugins]
 

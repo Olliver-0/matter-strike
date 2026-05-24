@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://dua0cbx2ekiht"]
+
+[ext_resource type="Script" uid="uid://jx8p1feuijed" path="res://terminal_ui.gd" id="1_cv4nl"]
+
+[node name="TerminalUI" type="Control" unique_id=44111674]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cv4nl")
+
+[node name="InputX" type="LineEdit" parent="." unique_id=122667180]
+layout_mode = 0
+offset_left = 374.0
+offset_top = 443.0
+offset_right = 442.5
+offset_bottom = 474.0
+placeholder_text = "Eixo X"
+
+[node name="InputY" type="LineEdit" parent="." unique_id=847863851]
+layout_mode = 0
+offset_left = 624.0
+offset_top = 444.0
+offset_right = 692.5
+offset_bottom = 475.0
+placeholder_text = "Eixo Y"
+
+[node name="BtnMove" type="Button" parent="." unique_id=433340920]
+layout_mode = 0
+offset_left = 474.0
+offset_top = 444.0
+offset_right = 601.0
+offset_bottom = 475.0
+text = "Mover/Calcular"
+
+[node name="BtnEndTurn" type="Button" parent="." unique_id=57217519]
+layout_mode = 0
+offset_left = 484.0
+offset_top = 400.0
+offset_right = 594.0
+offset_bottom = 431.0
+text = "Passar Turno"

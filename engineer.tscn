@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://5k8lf26tmvrd"]
+
+[ext_resource type="Script" uid="uid://ynqq03ek6iy6" path="res://engineer.gd" id="1_y47ya"]
+
+[node name="Engineer" type="Node2D" unique_id=2074585821]
+script = ExtResource("1_y47ya")
+
+[node name="VisualBody" type="ColorRect" parent="." unique_id=1176650629]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="EnergyGlow" type="PointLight2D" parent="." unique_id=1372638071]

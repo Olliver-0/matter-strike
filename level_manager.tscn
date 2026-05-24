@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://uulj2fryao8x"]
+
+[ext_resource type="Script" uid="uid://05tsoa3s8w7m" path="res://grid_renderer.gd" id="1_3maf5"]
+[ext_resource type="PackedScene" uid="uid://5k8lf26tmvrd" path="res://engineer.tscn" id="1_fvluo"]
+[ext_resource type="Script" uid="uid://cdw824okdgt7s" path="res://level_manager.gd" id="1_k1abw"]
+[ext_resource type="PackedScene" uid="uid://dua0cbx2ekiht" path="res://terminal_ui.tscn" id="4_5x5fn"]
+
+[node name="LevelManager" type="Node" unique_id=1567176229]
+script = ExtResource("1_k1abw")
+
+[node name="GridRenderer" type="Node2D" parent="." unique_id=1063518231]
+script = ExtResource("1_3maf5")
+
+[node name="Ground" type="ColorRect" parent="." unique_id=1053713388]
+offset_top = 768.0
+offset_right = 1280.0
+offset_bottom = 832.0
+color = Color(1, 0.14901961, 0, 1)
+
+[node name="Engineer1" parent="." unique_id=2074585821 instance=ExtResource("1_fvluo")]
+logical_position = Vector2(2, 11)
+
+[node name="Engineer2" parent="." unique_id=337870365 instance=ExtResource("1_fvluo")]
+player_id = 2
+theme_color = Color(0.039312236, 0.7448303, 0.80724716, 1)
+logical_position = Vector2(17, 11)
+
+[node name="TerminalUI" parent="." unique_id=44111674 instance=ExtResource("4_5x5fn")]
