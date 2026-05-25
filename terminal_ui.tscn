@@ -58,3 +58,19 @@ offset_top = 24.0
 offset_right = 1121.0
 offset_bottom = 55.0
 text = "Reiniciar Sistema"
+
+[node name="LblMoveCost" type="Label" parent="." unique_id=1424837180]
+layout_mode = 0
+offset_left = 493.0
+offset_top = 483.0
+offset_right = 580.0
+offset_bottom = 506.0
+text = "Custo: 0 UE"
+
+[node name="LblFireCost" type="Label" parent="." unique_id=1245315008]
+layout_mode = 0
+offset_left = 497.0
+offset_top = 323.0
+offset_right = 584.0
+offset_bottom = 346.0
+text = "Custo: 0 UE"

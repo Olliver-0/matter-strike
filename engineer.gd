@@ -11,6 +11,7 @@ signal health_changed(player_id: int, new_health: float)
 @onready var glow: PointLight2D = $EnergyGlow
 
 const CELL_SIZE: int = 64
+const GRID_HEIGHT: int = 12
 
 func _ready() -> void:
 	_setup_visuals()
@@ -26,8 +27,11 @@ func _setup_visuals() -> void:
 	glow.energy = 2.0
 
 func _sync_transform_to_logic() -> void:
-	# Função linear geométrica: translada a coordenada da matriz (x, y) para espaço em pixels
-	global_position = (logical_position * CELL_SIZE) + Vector2(CELL_SIZE / 2.0, CELL_SIZE / 2.0)
+	# Tradutor Cartesiano Físico
+	var inverted_y = (GRID_HEIGHT - 1) - int(logical_position.y)
+	var cartesian_pos = Vector2(logical_position.x, inverted_y)
+	
+	global_position = (cartesian_pos * CELL_SIZE) + Vector2(CELL_SIZE / 2.0, CELL_SIZE / 2.0)
 
 func attempt_move(target_grid_pos: Vector2) -> void:
 	var delta_x: int = int(abs(target_grid_pos.x - logical_position.x))
@@ -38,7 +42,9 @@ func attempt_move(target_grid_pos: Vector2) -> void:
 	# Valida com o serviço global se há energia para a transação
 	if GameState.consume_energy(player_id, cost):
 		logical_position = target_grid_pos
-		var target_global_pos = (logical_position * CELL_SIZE) + Vector2(CELL_SIZE / 2.0, CELL_SIZE / 2.0)
+		var inverted_y = (GRID_HEIGHT - 1) - int(logical_position.y)
+		var cartesian_pos = Vector2(logical_position.x, inverted_y)
+		var target_global_pos = (cartesian_pos * CELL_SIZE) + Vector2(CELL_SIZE / 2.0, CELL_SIZE / 2.0)
 		
 		# Animação gráfica desacoplada da física (fire-and-forget)
 		var tween: Tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)

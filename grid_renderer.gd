@@ -37,7 +37,9 @@ func _draw() -> void:
 		var end = Vector2(GRID_WIDTH * CELL_SIZE, y * CELL_SIZE)
 		draw_line(start, end, GRID_COLOR, 1.5)
 		
-		# Plota o número dentro da tela (X ajustado de -25 para +8)
 		if y < GRID_HEIGHT:
+			# TRADUTOR CARTESIANO VISUAL: O topo(0) vira 11, o chão(11) vira 0
+			var cartesian_y = (GRID_HEIGHT - 1) - y 
+			
 			var text_pos_y = Vector2(8, (y * CELL_SIZE) + 36)
-			draw_string(font, text_pos_y, str(y), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, TEXT_COLOR)
+			draw_string(font, text_pos_y, str(cartesian_y), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, TEXT_COLOR)

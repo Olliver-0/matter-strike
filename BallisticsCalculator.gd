@@ -61,7 +61,7 @@ func dispatch_shot(shooter: Node2D, target_coordinate: Vector2, input_type: Stri
 # CONTRATO COM A INTERFACE: Chamar esta função continuamente enquanto o jogador arrasta
 # a barra de Massa para prever quanto o tiro vai custar da barra de Energia (UE) dele.
 func calculate_energy_cost(preview_mass: float) -> float:
-	var cost_multiplier: float = 0.1 
+	var cost_multiplier: float = 0.08 
 	return preview_mass * cost_multiplier
 
 
@@ -71,23 +71,28 @@ func calculate_energy_cost(preview_mass: float) -> float:
 
 # Cria a bala no mapa, injeta a física e atira.
 func fire_shot(shooter: Node2D, target_coordinate: Vector2, input_mass: float, input_volume: float) -> void:
-	if not projectile_scene: return
-	
-	# Descobre a posição de saída extraindo-a do atirador que foi recebido
-	var start_position = shooter.global_position
+	# ==========================================
+	# 1. O DESVIO (OFFSET) VEM PARA CÁ!
+	# Pega a posição dos pés do atirador e sobe a bala 80 pixels (eixo Y negativo)
+	# para que ela nasça "na cabeça" dele, longe do chão!
+	# ==========================================
+	var start_position = shooter.global_position + Vector2(0, -100)
 	
 	var calculated_velocity = _calculate_launch_velocity(start_position, target_coordinate, input_mass, input_volume)
 	
 	var projectile_instance = projectile_scene.instantiate() as Area2D
 	get_tree().current_scene.add_child(projectile_instance)
-	projectile_instance.body_entered.connect(projectile_instance._on_body_entered)
+# ==========================================
+	# 2. O SINAL DUPLICADO FOI REMOVIDO!
+	# Mantemos apenas o sinal que avisa que o turno acabou.
+	# ==========================================
 	projectile_instance.projectile_impacted.connect(_on_projectile_impacted)
 	
 	# Inicializa passando o 'shooter' no final
 	projectile_instance.initialize(
 		start_position, calculated_velocity, input_mass,
 		input_volume, current_wind, current_gravity,
-		shooter # <--- ENTREGA O DONO PARA A BALA AQUI
+		shooter
 	)
 
 # Transforma coordenadas puras em um vetor de velocidade física (com punição por inércia/peso)

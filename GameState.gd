@@ -21,9 +21,16 @@ func consume_energy(player_id: int, amount: int) -> bool:
 
 func end_turn() -> void:
 	current_turn = 2 if current_turn == 1 else 1
-	players_energy[current_turn] = MAX_ENERGY # Recarrega no início da rodada
+	
+	# ==========================================
+	# REBALANCEAMENTO DA ECONOMIA DE ENERGIA (Tópico 4)
+	# Em vez de restaurar 100% da energia, damos uma "mesada" de 50 UE por turno.
+	# A função 'add_energy' já tem uma trava (clampi) para não passar do MAX_ENERGY.
+	# ==========================================
+	add_energy(current_turn, 50) 
+	
 	turn_changed.emit(current_turn)
-	energy_updated.emit(current_turn, MAX_ENERGY)
+	# (Apagámos a linha que forçava a emissão do MAX_ENERGY)
 
 func add_energy(player_id: int, amount: int) -> void:
 	players_energy[player_id] = clampi(players_energy[player_id] + amount, 0, MAX_ENERGY)

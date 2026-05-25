@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+signal preview_shot_requested(mass_value: float)
+
 @onready var mass_slider: HSlider = $MassSlider
 @onready var volume_slider: HSlider = $VolumeSlider
 @onready var material_dropdown: OptionButton = $MaterialDropdown
@@ -78,6 +80,8 @@ func _on_volume_changed(value: float) -> void:
 func _update_texts(m_val: float, v_val: float) -> void:
 	mass_label.text = "Massa: " + str(snapped(m_val, 0.1)) + " kg"
 	volume_label.text = "Volume: " + str(snapped(v_val, 0.1)) + " m³"
+	
+	preview_shot_requested.emit(m_val)
 
 # ==========================================
 # NOVAS FUNÇÕES DE CALLBACK (Listeners)

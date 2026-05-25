@@ -20,12 +20,12 @@ offset_bottom = 832.0
 color = Color(1, 0.14901961, 0, 1)
 
 [node name="Engineer1" parent="." unique_id=2074585821 instance=ExtResource("1_fvluo")]
-logical_position = Vector2(2, 11)
+logical_position = Vector2(2, 0)
 
 [node name="Engineer2" parent="." unique_id=337870365 instance=ExtResource("1_fvluo")]
 player_id = 2
 theme_color = Color(0.039312236, 0.7448303, 0.80724716, 1)
-logical_position = Vector2(17, 11)
+logical_position = Vector2(17, 0)
 
 [node name="TerminalUI" parent="." unique_id=44111674 instance=ExtResource("4_5x5fn")]
 
