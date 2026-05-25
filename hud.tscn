@@ -66,3 +66,10 @@ offset_left = 552.0
 offset_top = 121.0
 offset_right = 592.0
 offset_bottom = 144.0
+
+[node name="TurnFeedback" type="Label" parent="." unique_id=1678376099]
+offset_left = 652.0
+offset_top = 64.0
+offset_right = 808.0
+offset_bottom = 87.0
+text = "SISTEMA ATIVO: LÉO"

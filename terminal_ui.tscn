@@ -50,3 +50,11 @@ offset_top = 356.0
 offset_right = 568.0
 offset_bottom = 387.0
 text = "Atirar"
+
+[node name="BtnRestart" type="Button" parent="." unique_id=1162354724]
+layout_mode = 0
+offset_left = 980.0
+offset_top = 24.0
+offset_right = 1121.0
+offset_bottom = 55.0
+text = "Reiniciar Sistema"

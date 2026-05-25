@@ -1,6 +1,7 @@
 class_name Engineer extends StaticBody2D
 
 signal movement_resolved(final_coords: Vector2)
+signal health_changed(player_id: int, new_health: float)
 
 @export var player_id: int = 1
 @export var theme_color: Color = Color(1.0, 0.5, 0.0) # Padrão: Léo (Laranja)[cite: 2]
@@ -50,6 +51,8 @@ var health: float = 100.0
 
 func take_damage(amount: float) -> void:
 	health -= amount
+	health_changed.emit(player_id, health) # ADICIONE ESTA LINHA
+	
 	print("Engenheiro ", player_id, " foi atingido! Sofreu ", amount, " de dano.")
 	print("Vida atual: ", health)
 	

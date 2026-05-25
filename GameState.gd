@@ -24,3 +24,14 @@ func end_turn() -> void:
 	players_energy[current_turn] = MAX_ENERGY # Recarrega no início da rodada
 	turn_changed.emit(current_turn)
 	energy_updated.emit(current_turn, MAX_ENERGY)
+
+func add_energy(player_id: int, amount: int) -> void:
+	players_energy[player_id] = clampi(players_energy[player_id] + amount, 0, MAX_ENERGY)
+	energy_updated.emit(player_id, players_energy[player_id])
+
+func reset_state() -> void:
+	current_turn = 1
+	players_energy = {
+		1: MAX_ENERGY,
+		2: MAX_ENERGY
+	}

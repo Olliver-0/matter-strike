@@ -75,27 +75,20 @@ func _physics_process(delta: float) -> void:
 # ==========================================
 
 func _on_body_entered(body: Node) -> void:
-	# SE O CORPO FOR O ATIRADOR, IGNORA-O COMPLETAMENTE E CONTINUA A VOAR!
 	if body == shooter_node:
 		return
-	# 1. Calcula a velocidade escalar total (módulo do vetor) no momento exato do impacto.
+		
 	var impact_speed: float = velocity.length()
-	
-	# 2. Fórmula da Energia Cinética (Ec = 0.5 * m * v^2).
-	# Dividimos por um valor arbitrário (ex: 1000) para manter os números de dano equilibrados na UI.
 	var kinetic_energy: float = (0.5 * mass * pow(impact_speed, 2)) / 1000.0
 	
-	print(">>> IMPACTO REGISTRADO! Dano Calculado: ", kinetic_energy)
-	
-	# --- CONTRATO COM A INTERFACE / PERSONAGENS ---
-	# Se o objeto atingido (body) possuir o método de receber dano, aplicamos a energia nele.
-	# O colega que programar os inimigos DEVE usar exatamente a função 'take_damage(amount: float)'.
 	if body.has_method("take_damage"):
 		body.take_damage(kinetic_energy)
-	
-	# Avisa a Calculadora Balística que o ciclo físico do tiro acabou (para passar a vez).
+		
+		# Adiciona o ganho de energia para o atirador
+		var shooter_id = shooter_node.player_id
+		GameState.add_energy(shooter_id, 30)
+		print(">>> TIRO PERFEITO! Recuperando 30 UE para o Jogador ", shooter_id)
+		
 	projectile_impacted.emit()
-	
-	# Remove o projétil da memória no final do frame atual, limpando o ecrã.
 	queue_free()
 	
