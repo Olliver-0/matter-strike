@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://dua0cbx2ekiht"]
+[gd_scene format=3 uid="uid://hsbfsar31vml"]
 
-[ext_resource type="Script" uid="uid://jx8p1feuijed" path="res://terminal_ui.gd" id="1_cv4nl"]
+[ext_resource type="Script" uid="uid://jx8p1feuijed" path="res://TerminalUI.gd" id="1_cv4nl"]
 
 [node name="TerminalUI" type="Control" unique_id=44111674]
 layout_mode = 3
@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_cv4nl")
 
 [node name="InputX" type="LineEdit" parent="." unique_id=122667180]
