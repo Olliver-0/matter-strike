@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="matter-strike"
+run/main_scene="uid://d3cnsc3whb61b"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
