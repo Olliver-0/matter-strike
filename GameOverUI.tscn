@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://cxvljl5f2j2vb"]
+
+[ext_resource type="Script" uid="uid://i5chx3svtjfp" path="res://GameOverUI.gd" id="1_sdbmt"]
+[ext_resource type="Texture2D" uid="uid://d0toi23wlguql" path="res://assets/leo_wins.png" id="2_5jf7k"]
+
+[node name="GameOverUI" type="CanvasLayer" unique_id=83698500]
+layer = 100
+script = ExtResource("1_sdbmt")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1881979072]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8627451)
+
+[node name="Banner" type="TextureRect" parent="." unique_id=349764881]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_5jf7k")
+
+[node name="BtnRestart" type="Button" parent="." unique_id=1198134170]
+offset_left = 492.0
+offset_top = 619.0
+offset_right = 798.0
+offset_bottom = 677.0
+theme_override_font_sizes/font_size = 36
+text = "Reiniciar Sistema"

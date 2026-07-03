@@ -1,75 +1,111 @@
 [gd_scene format=3 uid="uid://cp07ycvbdljor"]
 
 [ext_resource type="Script" uid="uid://ilaf0w23pqoe" path="res://hud.gd" id="1_37p78"]
+[ext_resource type="Texture2D" uid="uid://cxabappy37chr" path="res://assets/leo_bar.png" id="2_8sq4i"]
+[ext_resource type="Texture2D" uid="uid://clia5kciocrbx" path="res://assets/sophie_bar.png" id="3_640wx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a2258"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1xsix"]
+bg_color = Color(0.9843194, 0.37508634, 0.14025807, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rftc2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61f8s"]
+bg_color = Color(5.198121e-06, 0.6516789, 0.8855914, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8sq4i"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_640wx"]
+bg_color = Color(0, 0.68983746, 0.66352385, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xsix"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rftc2"]
+bg_color = Color(0.12559536, 0.63877887, 0.9231318, 1)
 
 [node name="HUD" type="CanvasLayer" unique_id=1963854171]
 script = ExtResource("1_37p78")
 
-[node name="LeoHPBar" type="ProgressBar" parent="." unique_id=569235229]
-offset_left = 60.0
-offset_top = 409.0
-offset_right = 119.0
-offset_bottom = 436.0
-
-[node name="SophieHPBar" type="ProgressBar" parent="." unique_id=1896308650]
-offset_left = 1033.0
-offset_top = 420.0
-offset_right = 1076.0
-offset_bottom = 447.0
-
-[node name="EnergyBar" type="ProgressBar" parent="." unique_id=1272190674]
-offset_left = 547.0
-offset_top = 63.0
-offset_right = 586.0
-offset_bottom = 90.0
-
-[node name="MassSlider" type="HSlider" parent="." unique_id=695155100]
-offset_left = 538.0
-offset_top = 101.0
-offset_right = 594.0
-offset_bottom = 117.0
-
-[node name="VolumeLabel" type="Label" parent="." unique_id=282988866]
-offset_left = 551.0
-offset_top = 212.0
-offset_right = 591.0
-offset_bottom = 235.0
-
-[node name="HPLeo" type="TextEdit" parent="." unique_id=2127083808]
-offset_left = 57.0
-offset_top = 364.0
-offset_right = 123.0
-offset_bottom = 406.0
-text = "HP Léo"
-
-[node name="HPSophie" type="TextEdit" parent="." unique_id=319450044]
-offset_left = 1014.0
-offset_top = 386.0
-offset_right = 1101.0
-offset_bottom = 418.0
-text = "HP Sophie"
-
-[node name="MaterialDropdown" type="OptionButton" parent="." unique_id=1388935587]
-offset_left = 158.0
-offset_top = 56.0
-offset_right = 235.0
-offset_bottom = 76.0
-
-[node name="VolumeSlider" type="HSlider" parent="." unique_id=307904602]
-offset_left = 540.0
-offset_top = 173.0
-offset_right = 601.0
-offset_bottom = 189.0
-
-[node name="MassLabel" type="Label" parent="." unique_id=575378822]
-offset_left = 552.0
-offset_top = 121.0
-offset_right = 592.0
-offset_bottom = 144.0
-
 [node name="TurnFeedback" type="Label" parent="." unique_id=1678376099]
-offset_left = 652.0
-offset_top = 64.0
-offset_right = 808.0
-offset_bottom = 87.0
+offset_left = 556.0
+offset_top = 38.0
+offset_right = 712.0
+offset_bottom = 61.0
 text = "SISTEMA ATIVO: LÉO"
+
+[node name="LeoUI" type="Control" parent="." unique_id=1742701663]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 32.0
+offset_right = 432.0
+offset_bottom = 200.0
+
+[node name="TextureRect" type="TextureRect" parent="LeoUI" unique_id=1593762697]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_8sq4i")
+expand_mode = 1
+
+[node name="HPBar" type="ProgressBar" parent="LeoUI" unique_id=494567983]
+layout_mode = 0
+offset_left = 121.0
+offset_top = 88.0
+offset_right = 371.0
+offset_bottom = 113.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_a2258")
+theme_override_styles/fill = SubResource("StyleBoxFlat_1xsix")
+show_percentage = false
+
+[node name="EnergyBar" type="ProgressBar" parent="LeoUI" unique_id=770037146]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 131.0
+offset_right = 332.0
+offset_bottom = 145.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_rftc2")
+theme_override_styles/fill = SubResource("StyleBoxFlat_61f8s")
+show_percentage = false
+
+[node name="SophieUI" type="Control" parent="." unique_id=2083356203]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 848.0
+offset_right = 1248.0
+offset_bottom = 200.0
+
+[node name="TextureRect" type="TextureRect" parent="SophieUI" unique_id=329010080]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_640wx")
+expand_mode = 1
+
+[node name="HPBar" type="ProgressBar" parent="SophieUI" unique_id=493924403]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 88.0
+offset_right = 276.0
+offset_bottom = 112.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_8sq4i")
+theme_override_styles/fill = SubResource("StyleBoxFlat_640wx")
+fill_mode = 1
+show_percentage = false
+
+[node name="EnergyBar" type="ProgressBar" parent="SophieUI" unique_id=1091085035]
+layout_mode = 0
+offset_left = 65.0
+offset_top = 131.0
+offset_right = 246.0
+offset_bottom = 145.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_1xsix")
+theme_override_styles/fill = SubResource("StyleBoxFlat_rftc2")
+fill_mode = 1
+show_percentage = false

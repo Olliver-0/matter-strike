@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cci16imwgt1w5" path="res://Projectile.gd" id="1_t7eop"]
 [ext_resource type="Texture2D" uid="uid://xn4q4ua33p7f" path="res://icon.svg" id="2_e7peq"]
+[ext_resource type="AudioStream" uid="uid://bvc3e0g4q3qfy" path="res://sounds/disparo.mp3" id="3_1cf02"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e7peq"]
 size = Vector2(128, 128)
@@ -16,3 +17,6 @@ region_rect = Rect2(0, 0, 128, 128)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=287725300]
 visible = false
 shape = SubResource("RectangleShape2D_e7peq")
+
+[node name="FireSfx" type="AudioStreamPlayer2D" parent="." unique_id=303431956]
+stream = ExtResource("3_1cf02")

@@ -1,77 +1,127 @@
 [gd_scene format=3 uid="uid://hsbfsar31vml"]
 
 [ext_resource type="Script" uid="uid://jx8p1feuijed" path="res://TerminalUI.gd" id="1_cv4nl"]
+[ext_resource type="Texture2D" uid="uid://glq102vmaxoo" path="res://assets/hud.png" id="2_yx6kh"]
 
 [node name="TerminalUI" type="Control" unique_id=44111674]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -808.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_cv4nl")
 
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1149701601]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -192.0
+offset_bottom = 297.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("2_yx6kh")
+expand_mode = 1
+
 [node name="InputX" type="LineEdit" parent="." unique_id=122667180]
 layout_mode = 0
-offset_left = 374.0
-offset_top = 443.0
-offset_right = 442.5
-offset_bottom = 474.0
+offset_left = 128.0
+offset_top = 242.0
+offset_right = 196.5
+offset_bottom = 273.0
 placeholder_text = "Eixo X"
 
 [node name="InputY" type="LineEdit" parent="." unique_id=847863851]
 layout_mode = 0
-offset_left = 624.0
-offset_top = 444.0
-offset_right = 692.5
-offset_bottom = 475.0
+offset_left = 132.0
+offset_top = 311.0
+offset_right = 200.5
+offset_bottom = 342.0
 placeholder_text = "Eixo Y"
 
 [node name="BtnMove" type="Button" parent="." unique_id=433340920]
 layout_mode = 0
-offset_left = 474.0
-offset_top = 444.0
-offset_right = 601.0
-offset_bottom = 475.0
+offset_left = 802.0
+offset_top = 326.0
+offset_right = 929.0
+offset_bottom = 357.0
 text = "Mover/Calcular"
 
 [node name="BtnEndTurn" type="Button" parent="." unique_id=57217519]
 layout_mode = 0
-offset_left = 484.0
-offset_top = 400.0
-offset_right = 594.0
-offset_bottom = 431.0
+offset_left = 813.0
+offset_top = 267.0
+offset_right = 923.0
+offset_bottom = 298.0
 text = "Passar Turno"
 
 [node name="BtnFire" type="Button" parent="." unique_id=472430466]
 layout_mode = 0
-offset_left = 515.0
-offset_top = 356.0
-offset_right = 568.0
-offset_bottom = 387.0
+offset_left = 1149.0
+offset_top = 329.0
+offset_right = 1202.0
+offset_bottom = 360.0
 text = "Atirar"
 
 [node name="BtnRestart" type="Button" parent="." unique_id=1162354724]
 layout_mode = 0
-offset_left = 980.0
-offset_top = 24.0
-offset_right = 1121.0
-offset_bottom = 55.0
+offset_left = 1095.0
+offset_top = 162.0
+offset_right = 1236.0
+offset_bottom = 193.0
 text = "Reiniciar Sistema"
 
 [node name="LblMoveCost" type="Label" parent="." unique_id=1424837180]
 layout_mode = 0
-offset_left = 493.0
-offset_top = 483.0
-offset_right = 580.0
-offset_bottom = 506.0
+offset_left = 602.0
+offset_top = 355.0
+offset_right = 689.0
+offset_bottom = 378.0
 text = "Custo: 0 UE"
 
 [node name="LblFireCost" type="Label" parent="." unique_id=1245315008]
 layout_mode = 0
-offset_left = 497.0
-offset_top = 323.0
-offset_right = 584.0
-offset_bottom = 346.0
+offset_left = 829.0
+offset_top = 215.0
+offset_right = 916.0
+offset_bottom = 238.0
 text = "Custo: 0 UE"
+
+[node name="MassSlider" type="HSlider" parent="." unique_id=1048204419]
+layout_mode = 0
+offset_left = 617.0
+offset_top = 271.0
+offset_right = 673.0
+offset_bottom = 287.0
+
+[node name="VolumeLabel" type="Label" parent="." unique_id=1374881624]
+layout_mode = 0
+offset_left = 630.0
+offset_top = 302.0
+offset_right = 670.0
+offset_bottom = 325.0
+
+[node name="MaterialDropdown" type="OptionButton" parent="." unique_id=1565915872]
+layout_mode = 0
+offset_left = 393.0
+offset_top = 228.0
+offset_right = 470.0
+offset_bottom = 248.0
+
+[node name="VolumeSlider" type="HSlider" parent="." unique_id=1410306296]
+layout_mode = 0
+offset_left = 617.0
+offset_top = 329.0
+offset_right = 678.0
+offset_bottom = 345.0
+
+[node name="MassLabel" type="Label" parent="." unique_id=566540924]
+layout_mode = 0
+offset_left = 626.0
+offset_top = 247.0
+offset_right = 666.0
+offset_bottom = 270.0

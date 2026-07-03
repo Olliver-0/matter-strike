@@ -4,37 +4,118 @@
 [ext_resource type="Script" uid="uid://05tsoa3s8w7m" path="res://GridRenderer.gd" id="2_7d27x"]
 [ext_resource type="PackedScene" uid="uid://bx1d4jidf7btf" path="res://Engineer.tscn" id="3_yna0e"]
 [ext_resource type="PackedScene" uid="uid://hsbfsar31vml" path="res://TerminalUI.tscn" id="4_01q4t"]
-[ext_resource type="PackedScene" uid="uid://cp07ycvbdljor" path="res://HUD.tscn" id="5_va1us"]
+[ext_resource type="PackedScene" uid="uid://cp07ycvbdljor" path="res://hud.tscn" id="5_va1us"]
+[ext_resource type="AudioStream" uid="uid://bj1nxdqq1beil" path="res://sounds/defeat.mp3" id="5_yna0e"]
 [ext_resource type="PackedScene" uid="uid://cx6q7lyfieryq" path="res://BallisticsCalculator.tscn" id="6_1peul"]
+[ext_resource type="AudioStream" uid="uid://bxt0xsb4r2voy" path="res://sounds/damage.mp3" id="6_01q4t"]
+[ext_resource type="AudioStream" uid="uid://b773j5l0q5umr" path="res://sounds/teleport-in.mp3" id="7_1peul"]
+[ext_resource type="Texture2D" uid="uid://dog4uthjee6mu" path="res://assets/map.png" id="7_7d27x"]
+[ext_resource type="AudioStream" uid="uid://b0tce70mlbd76" path="res://sounds/teleport-out.mp3" id="8_pqq3e"]
+[ext_resource type="PackedScene" uid="uid://cxvljl5f2j2vb" path="res://GameOverUI.tscn" id="12_pqq3e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_va1us"]
+size = Vector2(794, 17)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yna0e"]
+size = Vector2(26.503296, 54)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_01q4t"]
+size = Vector2(23, 116)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7d27x"]
+size = Vector2(131, 39)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1peul"]
+size = Vector2(377, 28)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pqq3e"]
+size = Vector2(111, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mgwwh"]
+size = Vector2(338, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c6j73"]
+size = Vector2(398, 11)
 
 [node name="LevelManager" type="Node" unique_id=1567176229]
 script = ExtResource("1_rr2ei")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1585774892]
+offset_right = 1280.0
+offset_bottom = 768.0
+texture = ExtResource("7_7d27x")
+expand_mode = 1
 
 [node name="World" type="Node2D" parent="." unique_id=330658775]
 
 [node name="GridRenderer" type="Node2D" parent="World" unique_id=1063518231]
 script = ExtResource("2_7d27x")
 
-[node name="Ground" type="ColorRect" parent="World" unique_id=1053713388]
-offset_top = 768.0
-offset_right = 1280.0
-offset_bottom = 832.0
-color = Color(1, 0.14901961, 0, 1)
-
 [node name="Engineer1" parent="World" unique_id=2074585821 instance=ExtResource("3_yna0e")]
-logical_position = Vector2(2, 0)
+logical_position = Vector2(3, 4)
+death_sound = ExtResource("5_yna0e")
+damage_sound = ExtResource("6_01q4t")
+portal_in_sound = ExtResource("7_1peul")
+portal_out_sound = ExtResource("8_pqq3e")
 
 [node name="Engineer2" parent="World" unique_id=337870365 instance=ExtResource("3_yna0e")]
 player_id = 2
 theme_color = Color(0.039312236, 0.7448303, 0.80724716, 1)
-logical_position = Vector2(17, 0)
+logical_position = Vector2(14, 4)
+death_sound = ExtResource("5_yna0e")
+damage_sound = ExtResource("6_01q4t")
+portal_in_sound = ExtResource("7_1peul")
+portal_out_sound = ExtResource("8_pqq3e")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=2142319875]
 
 [node name="TerminalUI" parent="UI" unique_id=44111674 instance=ExtResource("4_01q4t")]
+offset_top = 544.0
+offset_bottom = -264.0
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="UI/TerminalUI" unique_id=141727953]
+position = Vector2(567, 537.5)
+shape = SubResource("RectangleShape2D_va1us")
 
 [node name="HUD" parent="UI" unique_id=1963854171 instance=ExtResource("5_va1us")]
 
 [node name="Systems" type="Node" parent="." unique_id=995535523]
 
 [node name="BallisticsCalculator" parent="Systems" unique_id=1592306824 instance=ExtResource("6_1peul")]
+
+[node name="EnvironmentGeometry" type="StaticBody2D" parent="." unique_id=1381599476]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=264315641]
+position = Vector2(977.47577, 531.734)
+rotation = -2.6045702
+shape = SubResource("RectangleShape2D_yna0e")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=1032564316]
+position = Vector2(987.5, 453)
+shape = SubResource("RectangleShape2D_01q4t")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=1622483987]
+position = Vector2(567, 537.5)
+shape = SubResource("RectangleShape2D_va1us")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=1693342925]
+position = Vector2(1064.5, 412.5)
+shape = SubResource("RectangleShape2D_7d27x")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=1649010388]
+position = Vector2(788.5, 407)
+shape = SubResource("RectangleShape2D_1peul")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=765117971]
+position = Vector2(511.5, 398.5)
+shape = SubResource("RectangleShape2D_pqq3e")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=1879113648]
+position = Vector2(488, 321.5)
+shape = SubResource("RectangleShape2D_mgwwh")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=2145377195]
+position = Vector2(842, 290.5)
+shape = SubResource("RectangleShape2D_c6j73")
+
+[node name="GameOverUI" parent="." unique_id=83698500 instance=ExtResource("12_pqq3e")]

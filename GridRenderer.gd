@@ -36,7 +36,7 @@ func _draw() -> void:
 		draw_line(start, end, GRID_COLOR, 1.5)
 		
 		if x < GameState.GRID_WIDTH:
-			var text_pos_x: Vector2 = Vector2((x * GameState.CELL_SIZE) + 24, (GameState.GRID_HEIGHT * GameState.CELL_SIZE) - 8)
+			var text_pos_x: Vector2 = Vector2((x * GameState.CELL_SIZE) + 24, 24)
 			draw_string(font, text_pos_x, str(x), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, TEXT_COLOR)
 		
 	# --- 2. DESENHO DO EIXO Y (Linhas Horizontais e Números Invertidos) ---
