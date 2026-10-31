@@ -37,6 +37,9 @@ size = Vector2(338, 11)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c6j73"]
 size = Vector2(398, 11)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_top_plat"]
+size = Vector2(240, 11)
+
 [node name="LevelManager" type="Node" unique_id=1567176229]
 script = ExtResource("1_rr2ei")
 
@@ -117,5 +120,9 @@ shape = SubResource("RectangleShape2D_mgwwh")
 [node name="CollisionShape2D8" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=2145377195]
 position = Vector2(842, 290.5)
 shape = SubResource("RectangleShape2D_c6j73")
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="EnvironmentGeometry" unique_id=2145377196]
+position = Vector2(760, 180.5)
+shape = SubResource("RectangleShape2D_top_plat")
 
 [node name="GameOverUI" parent="." unique_id=83698500 instance=ExtResource("12_pqq3e")]

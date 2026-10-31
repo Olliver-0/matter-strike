@@ -9,6 +9,7 @@ class_name Projectile extends Area2D
 
 ## Emitido no exato momento em que o projétil colide com algo ou se perde no espaço.
 signal projectile_impacted
+signal shot_result_logged(hit: bool, target_id: int, damage: float)
 
 # ==========================================
 # 2. VARIÁVEIS DE ESTADO FÍSICO E UI NODES
@@ -90,6 +91,7 @@ func _physics_process(delta: float) -> void:
 	# Se a bala cair do mapa (Y > 1000) ou voar para fora das laterais (X < -200 ou X > 1500)
 	if global_position.y > 1000.0 or global_position.x < -200.0 or global_position.x > 1500.0:
 		print(">>> O projétil saiu dos limites do mapa. Turno encerrado!")
+		shot_result_logged.emit(false, 0, 0.0)
 		projectile_impacted.emit()
 		queue_free()
 		return
@@ -98,6 +100,7 @@ func _physics_process(delta: float) -> void:
 	lifespan -= delta 
 	if lifespan <= 0.0:
 		print(">>> Tempo limite do projétil esgotado!")
+		shot_result_logged.emit(false, 0, 0.0)
 		projectile_impacted.emit()
 		queue_free()
 
@@ -132,5 +135,7 @@ func _on_body_entered(body: Node) -> void:
 		print(">>> TIRO PERFEITO! Recuperando 30 UE para o Jogador ", shooter_id)
 			
 	# 6. Avisa o LevelManager e destrói a bala
+	var target_id: int = body.player_id if "player_id" in body else 0
+	shot_result_logged.emit(true, target_id, kinetic_energy)
 	projectile_impacted.emit()
 	queue_free()

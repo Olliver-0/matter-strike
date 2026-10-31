@@ -53,6 +53,9 @@ func _ready() -> void:
 	_setup_visuals()
 	_sync_transform_to_logic()
 	
+	# Garante que o Raycast 2D alinhe os pés ao chão físico assim que o PhysicsServer2D inicializar os colisores do mapa
+	get_tree().physics_frame.connect(_sync_transform_to_logic, CONNECT_ONE_SHOT)
+	
 	# Define o estado inicial da máquina de estados dependendo de quem é o jogador
 	set_state("idle", player_id == 1)
 
@@ -97,6 +100,9 @@ func set_state(base_state: String, facing_right: bool) -> void:
 	# Injeção da imagem baseada no dicionário carregado no início da partida
 	if _pose_textures.has(state_name) and _pose_textures[state_name] != null:
 		visual_body.texture = _pose_textures[state_name]
+		# Compensa a diferença de altura das texturas (cast, portal, defeat) para manter a sola das botas fixa no chão
+		var base_height: float = 436.0 if player_id == 1 else 413.0
+		visual_body.offset.y = (base_height - visual_body.texture.get_height()) * 0.4
 	else:
 		push_warning("Falta de asset para a pose: ", state_name)
 	
@@ -109,11 +115,45 @@ func set_state(base_state: String, facing_right: bool) -> void:
 # 5. SISTEMA DE LOCOMOÇÃO
 # ==========================================
 
-## Teleporta o visual do engenheiro para a sua coordenada lógica instantaneamente.
+## Teleporta o visual do engenheiro para a sua coordenada lógica apoiando os pés no chão físico.
 func _sync_transform_to_logic() -> void:
-	var inverted_y: int = (GameState.GRID_HEIGHT - 1) - int(logical_position.y)
-	var cartesian_pos: Vector2 = Vector2(logical_position.x, inverted_y)
-	global_position = (cartesian_pos * GameState.CELL_SIZE) + Vector2(GameState.CELL_SIZE / 2.0, GameState.CELL_SIZE / 2.0)
+	global_position = _get_snapped_world_position(logical_position)
+
+
+## Calcula a posição global (X, Y) centralizando X na coluna do grid e usando Raycast 2D
+## para apoiar a sola das botas exatamente na superfície da plataforma em EnvironmentGeometry.
+func _get_snapped_world_position(grid_pos: Vector2) -> Vector2:
+	var inverted_y: int = (GameState.GRID_HEIGHT - 1) - int(grid_pos.y)
+	var target_x: float = (grid_pos.x * GameState.CELL_SIZE) + (GameState.CELL_SIZE / 2.0)
+	var fallback_y: float = (inverted_y * GameState.CELL_SIZE) + (GameState.CELL_SIZE / 2.0)
+	var foot_offset: float = 26.0 if player_id == 1 else 24.5
+	
+	if is_inside_tree() and get_world_2d() != null:
+		var space_state: PhysicsDirectSpaceState2D = get_world_2d().direct_space_state
+		if space_state != null:
+			# Ignora os personagens para colidir apenas com o cenário (EnvironmentGeometry)
+			var exclude_rids: Array[RID] = [get_rid()]
+			if get_parent() != null:
+				for sibling in get_parent().get_children():
+					if sibling is CollisionObject2D and sibling != self:
+						exclude_rids.append(sibling.get_rid())
+			
+			var ray_start_y: float = (inverted_y * GameState.CELL_SIZE) + 12.0
+			var ray_end_y: float = ((inverted_y + 2) * GameState.CELL_SIZE) + 40.0
+			
+			# Testa o centro da coluna e pequenas margens laterais caso a borda da plataforma termine perto do centro
+			for dx in [0.0, -16.0, 16.0, -28.0, 28.0]:
+				var query := PhysicsRayQueryParameters2D.create(
+					Vector2(target_x + dx, ray_start_y),
+					Vector2(target_x + dx, ray_end_y)
+				)
+				query.exclude = exclude_rids
+				var result: Dictionary = space_state.intersect_ray(query)
+				if not result.is_empty():
+					var ground_y: float = result["position"].y
+					return Vector2(target_x, ground_y - foot_offset)
+					
+	return Vector2(target_x, fallback_y)
 
 
 ## Valida o custo de energia, calcula a conversão cartesiana e aciona a sequência assíncrona de portal.
@@ -124,9 +164,7 @@ func attempt_move(target_grid_pos: Vector2) -> void:
 	var cost: int = (delta_x * 1) + (delta_y * 2) 
 	
 	if GameState.consume_energy(player_id, cost):
-		var inverted_y: int = (GameState.GRID_HEIGHT - 1) - int(target_grid_pos.y)
-		var cartesian_pos: Vector2 = Vector2(target_grid_pos.x, inverted_y)
-		var target_global_pos: Vector2 = (cartesian_pos * GameState.CELL_SIZE) + Vector2(GameState.CELL_SIZE / 2.0, GameState.CELL_SIZE / 2.0)
+		var target_global_pos: Vector2 = _get_snapped_world_position(target_grid_pos)
 		
 		# Delega a translação física para a corrotina visual
 		_play_portal_sequence(target_grid_pos, target_global_pos)

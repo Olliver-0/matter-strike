@@ -10,6 +10,8 @@ class_name BallisticsCalculator extends Node2D
 ## Emitido quando o ciclo balístico do projétil termina (bateu ou sumiu).
 ## O LevelManager escuta isto para saber quando passar o turno com segurança.
 signal turn_resolved
+signal shot_dispatched(shooter_id: int, material_name: String, input_type: String, final_mass: float, final_volume: float)
+signal shot_result_logged(hit: bool, target_id: int, damage: float)
 
 
 # ==========================================
@@ -70,6 +72,9 @@ func dispatch_shot(shooter: Node2D, target_coordinate: Vector2, input_type: Stri
 	print("Material Atual: ", MaterialsTable.current_material)
 	print("Massa Final: ", final_mass, " | Volume Final: ", final_volume)
 	
+	var s_id: int = shooter.player_id if shooter and "player_id" in shooter else GameState.current_turn
+	shot_dispatched.emit(s_id, MaterialsTable.current_material, input_type, final_mass, final_volume)
+	
 	# Repassa os dados validados para a forja interna de matéria
 	_fire_shot(shooter, target_coordinate, final_mass, final_volume)
 
@@ -104,6 +109,7 @@ func _fire_shot(shooter: Node2D, target_coordinate: Vector2, input_mass: float, 
 	
 	# Ouve o projétil para saber quando a física terminou de processá-lo
 	projectile_instance.projectile_impacted.connect(_on_projectile_impacted)
+	projectile_instance.shot_result_logged.connect(func(hit: bool, t_id: int, dmg: float): shot_result_logged.emit(hit, t_id, dmg))
 	
 	# Inicializa o objeto físico passando todos os atributos ambientais
 	projectile_instance.initialize(

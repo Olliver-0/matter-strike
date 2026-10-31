@@ -21,8 +21,8 @@ signal preview_shot_requested(mass_value: float)
 # ==========================================
 
 # --- Caixas de Entrada (Inputs) ---
-@onready var input_x: LineEdit = $InputX
-@onready var input_y: LineEdit = $InputY
+@onready var coord_display: Label = $CoordinateDisplay
+@onready var numpad: GridContainer = $Numpad
 
 # --- Botões de Ação ---
 @onready var btn_move: Button = $BtnMove
@@ -37,9 +37,13 @@ signal preview_shot_requested(mass_value: float)
 # --- Controles de Matéria (Migrados do HUD) ---
 @onready var mass_slider: HSlider = $MassSlider
 @onready var volume_slider: HSlider = $VolumeSlider
-@onready var material_dropdown: OptionButton = $MaterialDropdown
+@onready var btn_mat_cork: Button = get_node_or_null("BtnMatCork")
+@onready var btn_mat_stone: Button = get_node_or_null("BtnMatStone")
+@onready var btn_mat_iron: Button = get_node_or_null("BtnMatIron")
+@onready var btn_mat_lead: Button = get_node_or_null("BtnMatLead")
 @onready var mass_label: Label = $MassLabel
 @onready var volume_label: Label = $VolumeLabel
+@onready var shot_log: RichTextLabel = get_node_or_null("ShotLog")
 
 
 # ==========================================
@@ -48,6 +52,12 @@ signal preview_shot_requested(mass_value: float)
 
 ## Armazena qual foi a última barra ajustada pelo jogador ("MASS" ou "VOLUME").
 var last_edited: String = "MASS" 
+
+## Armazena as coordenadas digitadas (ex: "0509" -> X=05, Y=09)
+var current_coord_input: String = ""
+
+## Histórico de disparos realizados na partida.
+var shot_history: Array[Dictionary] = []
 
 
 # ==========================================
@@ -61,18 +71,31 @@ func _ready() -> void:
 	btn_end_turn.pressed.connect(_on_btn_end_turn_pressed)
 	btn_restart.pressed.connect(_on_btn_restart_pressed)
 	
-	# Liga o evento de digitação ao sistema de Preview
-	input_x.text_changed.connect(_on_text_changed)
-	input_y.text_changed.connect(_on_text_changed)
-	
-	# Preenche o Dropdown com os materiais do banco de dados global
-	if material_dropdown:
-		material_dropdown.clear()
-		for mat_name in MaterialsTable.MATERIALS.keys():
-			material_dropdown.add_item(mat_name)
+	# Liga os botões do numpad
+	if numpad:
+		for i in range(10):
+			var btn = numpad.get_node_or_null("Btn" + str(i))
+			if btn:
+				btn.pressed.connect(_on_numpad_pressed.bind(str(i)))
+		var btn_clear = numpad.get_node_or_null("BtnClear")
+		if btn_clear:
+			btn_clear.pressed.connect(_on_btn_clear_pressed)
 			
-	# Conecta as barras físicas aos métodos locais
-	if material_dropdown: material_dropdown.item_selected.connect(_on_material_selected)
+	_update_coord_display()
+	
+	# Conecta os botões individuais de materiais
+	var mat_buttons = {
+		"CORTIÇA": btn_mat_cork,
+		"PEDRA": btn_mat_stone,
+		"FERRO": btn_mat_iron,
+		"CHUMBO": btn_mat_lead
+	}
+	for mat_name in mat_buttons.keys():
+		var btn: Button = mat_buttons[mat_name]
+		if btn:
+			btn.pressed.connect(_on_material_button_pressed.bind(mat_name))
+			if mat_name == MaterialsTable.current_material:
+				btn.button_pressed = true
 	if mass_slider: mass_slider.value_changed.connect(_on_mass_changed)
 	if volume_slider: volume_slider.value_changed.connect(_on_volume_changed)
 	
@@ -104,24 +127,117 @@ func get_current_input_value() -> float:
 		return volume_slider.value
 	return 0.0
 
+## Retorna as coordenadas X e Y atuais digitadas (ou strings vazias caso incompletas).
+func get_target_coords() -> Array[String]:
+	if current_coord_input.length() == 4:
+		return [current_coord_input.substr(0, 2), current_coord_input.substr(2, 2)]
+	return ["", ""]
+
+## Registra um novo disparo no painel de histórico (mais recente no topo).
+func add_shot_log(shooter_id: int, material_name: String, input_type: String, final_mass: float, final_volume: float, target_x: int, target_y: int) -> void:
+	var shooter_name: String = "Léo" if shooter_id == 1 else "Sophie"
+	var mat_label: String = material_name.capitalize()
+	var m_str: String = str(snapped(final_mass, 0.1))
+	var v_str: String = str(snapped(final_volume, 0.1))
+	
+	var param_str: String = ""
+	if input_type == "VOLUME":
+		param_str = "Volume: %s (Massa: %s)" % [v_str, m_str]
+	else:
+		param_str = "Massa: %s (Vol: %s)" % [m_str, v_str]
+		
+	var entry: Dictionary = {
+		"index": shot_history.size() + 1,
+		"shooter": shooter_name,
+		"shooter_id": shooter_id,
+		"material": mat_label,
+		"param_str": param_str,
+		"coords": "[%d, %d]" % [target_x, target_y],
+		"result": ""
+	}
+	shot_history.push_front(entry)
+	_render_shot_log()
+
+## Atualiza o resultado (impacto/dano ou erro) do disparo mais recente no log.
+func update_last_shot_result(hit: bool, target_id: int, damage: float) -> void:
+	if shot_history.is_empty():
+		return
+	if hit:
+		var target_name: String = "Léo" if target_id == 1 else "Sophie"
+		shot_history[0]["result"] = "[color=#e89a48]  ↳ Impacto em %s: -%s HP (+30 UE)[/color]" % [target_name, str(snapped(damage, 0.1))]
+	else:
+		shot_history[0]["result"] = "[color=#8c765c]  ↳ Sem impacto (fora dos limites)[/color]"
+	_render_shot_log()
+
+func _render_shot_log() -> void:
+	if not shot_log:
+		return
+	if shot_history.is_empty():
+		shot_log.text = "[color=#8c765c]Aguardando registros balísticos...[/color]"
+		return
+	var lines: PackedStringArray = []
+	for item in shot_history:
+		var name_color: String = "#f0a050" if item["shooter_id"] == 1 else "#78c8d0"
+		var line: String = "[b][color=#ead2ac]DISPARO #%d:[/color][/b] [color=%s]%s[/color] -> %s, %s,\nCoord: %s" % [
+			item["index"],
+			name_color,
+			item["shooter"],
+			item["material"],
+			item["param_str"],
+			item["coords"]
+		]
+		if not item["result"].is_empty():
+			line += "\n" + item["result"]
+		lines.append(line)
+	shot_log.text = "\n".join(lines)
+
 
 # ==========================================
 # 6. CALLBACKS DE COORDENADAS E AÇÃO
 # ==========================================
 
-func _on_text_changed(_new_text: String) -> void:
-	preview_move_requested.emit(input_x.text, input_y.text)
+func _on_numpad_pressed(digit: String) -> void:
+	if current_coord_input.length() < 4:
+		current_coord_input += digit
+		_update_coord_display()
+
+func _on_btn_clear_pressed() -> void:
+	_clear_inputs()
+
+func _update_coord_display() -> void:
+	var disp = "["
+	var x_str = "__"
+	var y_str = "__"
+	
+	if current_coord_input.length() >= 1:
+		x_str = current_coord_input.substr(0, 1) + "_"
+	if current_coord_input.length() >= 2:
+		x_str = current_coord_input.substr(0, 2)
+	if current_coord_input.length() >= 3:
+		y_str = current_coord_input.substr(2, 1) + "_"
+	if current_coord_input.length() >= 4:
+		y_str = current_coord_input.substr(2, 2)
+		
+	disp += x_str + ", " + y_str + "]"
+	if coord_display:
+		coord_display.text = disp
+		
+	# trigger preview
+	if current_coord_input.length() == 4:
+		preview_move_requested.emit(current_coord_input.substr(0, 2), current_coord_input.substr(2, 2))
+	elif current_coord_input.length() == 0:
+		preview_move_requested.emit("", "")
 
 func _on_btn_move_pressed() -> void:
-	if input_x.text.is_empty() or input_y.text.is_empty():
+	if current_coord_input.length() < 4:
 		return
-	move_command_issued.emit(int(input_x.text), int(input_y.text))
+	move_command_issued.emit(int(current_coord_input.substr(0, 2)), int(current_coord_input.substr(2, 2)))
 	_clear_inputs()
 
 func _on_btn_fire_pressed() -> void:
-	if input_x.text.is_empty() or input_y.text.is_empty():
+	if current_coord_input.length() < 4:
 		return
-	fire_command_issued.emit(int(input_x.text), int(input_y.text))
+	fire_command_issued.emit(int(current_coord_input.substr(0, 2)), int(current_coord_input.substr(2, 2)))
 	_clear_inputs()
 
 func _on_btn_end_turn_pressed() -> void:
@@ -132,18 +248,16 @@ func _on_btn_restart_pressed() -> void:
 	get_tree().reload_current_scene()
 
 func _clear_inputs() -> void:
-	input_x.text = ""
-	input_y.text = ""
-	preview_move_requested.emit("", "")
+	current_coord_input = ""
+	_update_coord_display()
 
 
 # ==========================================
 # 7. MÉTODOS DE CÁLCULO FÍSICO (MATÉRIA)
 # ==========================================
 
-func _on_material_selected(index: int) -> void:
-	var selected_mat: String = material_dropdown.get_item_text(index)
-	MaterialsTable.current_material = selected_mat
+func _on_material_button_pressed(mat_name: String) -> void:
+	MaterialsTable.current_material = mat_name
 	_update_limits_and_bars()
 
 func _update_limits_and_bars() -> void:
