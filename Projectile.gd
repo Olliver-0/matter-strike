@@ -1,5 +1,5 @@
 ## DESCRIÇÃO: Representa a matéria programável (bala) disparada pelo jogador.
-## Processa a sua própria simulação física (gravidade, vento, inércia) usando 
+## Processa a sua própria simulação física (gravidade e inércia) usando 
 ## a matemática balística ditada pela densidade, e aplica a energia cinética no alvo.
 class_name Projectile extends Area2D
 
@@ -22,7 +22,6 @@ var velocity: Vector2 = Vector2.ZERO
 var mass: float = 1.0
 var volume: float = 1.0
 var custom_gravity: float = 980.0
-var wind_force: float = 0.0
 var lifespan: float = 10.0
 var shooter_node: Node2D = null
 
@@ -51,12 +50,11 @@ func _ready() -> void:
 
 
 ## Injeta os dados balísticos e aplica a textura baseada no ID do atirador.
-func initialize(start_position: Vector2, initial_velocity: Vector2, p_mass: float, p_volume: float, p_wind: float, p_gravity: float, p_shooter: Node2D) -> void:
+func initialize(start_position: Vector2, initial_velocity: Vector2, p_mass: float, p_volume: float, p_gravity: float, p_shooter: Node2D) -> void:
 	global_position = start_position
 	velocity = initial_velocity
 	mass = p_mass
 	volume = p_volume
-	wind_force = p_wind
 	custom_gravity = p_gravity
 	shooter_node = p_shooter
 	
@@ -82,8 +80,6 @@ func initialize(start_position: Vector2, initial_velocity: Vector2, p_mass: floa
 # ==========================================
 
 func _physics_process(delta: float) -> void:
-	var wind_acceleration: float = (volume * wind_force) / mass
-	velocity.x += wind_acceleration * delta
 	velocity.y += custom_gravity * delta
 	global_position += velocity * delta
 	

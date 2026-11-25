@@ -28,7 +28,6 @@ signal preview_shot_requested(mass_value: float)
 @onready var btn_move: Button = $BtnMove
 @onready var btn_fire: Button = $BtnFire
 @onready var btn_end_turn: Button = $BtnEndTurn
-@onready var btn_restart: Button = $BtnRestart
 
 # --- Textos de Feedback (Custos) ---
 @onready var lbl_move_cost: Label = $LblMoveCost
@@ -69,7 +68,6 @@ func _ready() -> void:
 	btn_move.pressed.connect(_on_btn_move_pressed)
 	btn_fire.pressed.connect(_on_btn_fire_pressed)
 	btn_end_turn.pressed.connect(_on_btn_end_turn_pressed)
-	btn_restart.pressed.connect(_on_btn_restart_pressed)
 	
 	# Liga os botões do numpad
 	if numpad:
@@ -101,6 +99,44 @@ func _ready() -> void:
 	
 	# Força a primeira atualização para configurar os limites matemáticos
 	_update_limits_and_bars()
+
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree():
+		return
+	var current_scene: Node = get_tree().current_scene
+	if current_scene:
+		var game_over: Node = current_scene.get_node_or_null("GameOverUI")
+		if game_over and game_over.visible:
+			return
+	if not (event is InputEventKey) or not event.pressed:
+		return
+	var key_event: InputEventKey = event as InputEventKey
+	var keycode: Key = key_event.keycode
+	
+	# Dígitos 0–9 (linha superior do teclado ou teclado numérico)
+	if keycode >= KEY_0 and keycode <= KEY_9:
+		if not key_event.echo:
+			_on_numpad_pressed(str(keycode - KEY_0))
+		get_viewport().set_input_as_handled()
+	elif keycode >= KEY_KP_0 and keycode <= KEY_KP_9:
+		if not key_event.echo:
+			_on_numpad_pressed(str(keycode - KEY_KP_0))
+		get_viewport().set_input_as_handled()
+	# Backspace apaga o último dígito digitado
+	elif keycode == KEY_BACKSPACE:
+		_erase_last_digit()
+		get_viewport().set_input_as_handled()
+	# Delete ou C limpa todas as coordenadas
+	elif keycode == KEY_DELETE or keycode == KEY_C:
+		if not key_event.echo:
+			_clear_inputs()
+		get_viewport().set_input_as_handled()
+	# Enter (principal ou numérico) dispara
+	elif keycode == KEY_ENTER or keycode == KEY_KP_ENTER:
+		if not key_event.echo:
+			_on_btn_fire_pressed()
+		get_viewport().set_input_as_handled()
 
 
 # ==========================================
@@ -204,6 +240,11 @@ func _on_numpad_pressed(digit: String) -> void:
 func _on_btn_clear_pressed() -> void:
 	_clear_inputs()
 
+func _erase_last_digit() -> void:
+	if current_coord_input.length() > 0:
+		current_coord_input = current_coord_input.substr(0, current_coord_input.length() - 1)
+		_update_coord_display()
+
 func _update_coord_display() -> void:
 	var disp = "["
 	var x_str = "__"
@@ -225,7 +266,7 @@ func _update_coord_display() -> void:
 	# trigger preview
 	if current_coord_input.length() == 4:
 		preview_move_requested.emit(current_coord_input.substr(0, 2), current_coord_input.substr(2, 2))
-	elif current_coord_input.length() == 0:
+	else:
 		preview_move_requested.emit("", "")
 
 func _on_btn_move_pressed() -> void:
@@ -242,10 +283,6 @@ func _on_btn_fire_pressed() -> void:
 
 func _on_btn_end_turn_pressed() -> void:
 	end_turn_requested.emit()
-
-func _on_btn_restart_pressed() -> void:
-	GameState.reset_state()
-	get_tree().reload_current_scene()
 
 func _clear_inputs() -> void:
 	current_coord_input = ""

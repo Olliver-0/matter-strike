@@ -17,6 +17,7 @@ var last_shot_coords: Vector2i = Vector2i.ZERO
 
 @onready var engineer1: StaticBody2D = $World/Engineer1
 @onready var engineer2: StaticBody2D = $World/Engineer2 
+@onready var grid_renderer: GridRenderer = $World/GridRenderer
 
 @onready var terminal_ui: Control = $UI/TerminalUI
 @onready var hud: CanvasLayer = $UI/HUD
@@ -29,6 +30,7 @@ var last_shot_coords: Vector2i = Vector2i.ZERO
 # ==========================================
 
 func _ready() -> void:
+	MusicManager.play_combat()
 	terminal_ui.move_command_issued.connect(_on_terminal_command_issued)
 	terminal_ui.end_turn_requested.connect(_on_end_turn_requested)
 	terminal_ui.fire_command_issued.connect(_on_terminal_fire_issued)
@@ -47,6 +49,8 @@ func _ready() -> void:
 	# --- NOVO: O Orquestrador agora escuta se alguém morrer ---
 	engineer1.died.connect(_on_engineer_died)
 	engineer2.died.connect(_on_engineer_died)
+	engineer1.movement_resolved.connect(_on_engineer_moved)
+	engineer2.movement_resolved.connect(_on_engineer_moved)
 	
 	_on_preview_shot(terminal_ui.mass_slider.value)
 
@@ -78,6 +82,8 @@ func _on_preview_move(x_str: String, y_str: String) -> void:
 	
 	if x_str.is_empty() or y_str.is_empty() or not x_str.is_valid_int() or not y_str.is_valid_int():
 		terminal_ui.set_move_cost(0)
+		if grid_renderer:
+			grid_renderer.clear_preview()
 		return
 		
 	var target_x := int(x_str)
@@ -89,11 +95,65 @@ func _on_preview_move(x_str: String, y_str: String) -> void:
 	var cost: int = (delta_x * 1) + (delta_y * 2) 
 	
 	terminal_ui.set_move_cost(cost)
+	_update_tactical_preview()
 
 func _on_preview_shot(mass_value: float) -> void:
 	if is_game_over: return
 	var cost := int(calculator.calculate_energy_cost(mass_value))
 	terminal_ui.set_fire_cost(cost)
+	_update_tactical_preview()
+
+
+func _update_tactical_preview() -> void:
+	if not grid_renderer:
+		return
+	if is_shooting or is_game_over:
+		grid_renderer.clear_preview()
+		return
+		
+	var coords: Array[String] = terminal_ui.get_target_coords()
+	if coords[0].is_empty() or coords[1].is_empty() or not coords[0].is_valid_int() or not coords[1].is_valid_int():
+		grid_renderer.clear_preview()
+		return
+		
+	var target_x: int = int(coords[0])
+	var target_y: int = int(coords[1])
+	var active_engineer = engineer1 if GameState.current_turn == 1 else engineer2
+	if not is_instance_valid(active_engineer):
+		grid_renderer.clear_preview()
+		return
+		
+	# 1. Calcula o ponto de pouso válido para movimentação
+	var floor_y: int = _get_logical_floor(target_x, target_y)
+	var can_land: bool = (floor_y != -1 and target_y >= floor_y)
+	var landing_cell := Vector2i(target_x, floor_y if can_land else target_y)
+	var landing_foot_pos: Vector2 = Vector2.ZERO
+	if can_land and active_engineer.has_method("get_landing_foot_position"):
+		landing_foot_pos = active_engineer.get_landing_foot_position(Vector2(target_x, floor_y))
+		
+	# 2. Calcula a parábola exata para o material / massa / volume e coordenadas atuais
+	var inverted_target_y: int = (GameState.GRID_HEIGHT - 1) - target_y
+	var target_pos := Vector2(
+		(target_x * GameState.CELL_SIZE) + (GameState.CELL_SIZE / 2.0),
+		(inverted_target_y * GameState.CELL_SIZE) + (GameState.CELL_SIZE / 2.0)
+	)
+	var input_type: String = terminal_ui.get_current_input_type()
+	var input_value: float = terminal_ui.get_current_input_value()
+	var trajectory: PackedVector2Array = calculator.predict_trajectory(active_engineer, target_pos, input_type, input_value)
+	
+	var accent: Color = active_engineer.theme_color if "theme_color" in active_engineer else Color(1.0, 0.5, 0.0, 1.0)
+	grid_renderer.set_tactical_preview(
+		Vector2i(target_x, target_y),
+		can_land,
+		landing_cell,
+		landing_foot_pos,
+		trajectory,
+		accent
+	)
+
+
+func _on_engineer_moved(_final_coords: Vector2) -> void:
+	_update_tactical_preview()
 
 # ==========================================
 # 6. RESPOSTAS A SINAIS: COMANDOS DE AÇÃO
@@ -130,6 +190,8 @@ func _on_terminal_fire_issued(target_x: int, target_y: int) -> void:
 	
 	if GameState.consume_energy(current_player_id, energy_cost):
 		is_shooting = true 
+		if grid_renderer:
+			grid_renderer.clear_preview()
 		last_shot_coords = Vector2i(target_x, target_y)
 		var inverted_target_y: int = (GameState.GRID_HEIGHT - 1) - target_y
 		var target_pos := Vector2(
@@ -174,6 +236,8 @@ func _on_turn_changed(new_turn: int) -> void:
 ## NOVO: Função chamada instantaneamente quando um personagem zera a vida
 func _on_engineer_died(dead_player_id: int) -> void:
 	is_game_over = true
+	if grid_renderer:
+		grid_renderer.clear_preview()
 	print(">>> LEVEL MANAGER DETECTOU MORTE: O jogo acabou!")
 	
 	# Se o 1 morreu, o 2 ganha.

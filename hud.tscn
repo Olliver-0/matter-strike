@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://ilaf0w23pqoe" path="res://hud.gd" id="1_37p78"]
 [ext_resource type="Texture2D" uid="uid://cxabappy37chr" path="res://assets/leo_bar.png" id="2_8sq4i"]
 [ext_resource type="Texture2D" uid="uid://clia5kciocrbx" path="res://assets/sophie_bar.png" id="3_640wx"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_normal.png" id="4_menu_norm"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_hover.png" id="5_menu_hov"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_pressed.png" id="6_menu_press"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a2258"]
 
@@ -24,15 +27,59 @@ bg_color = Color(0, 0.68983746, 0.66352385, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rftc2"]
 bg_color = Color(0.12559536, 0.63877887, 0.9231318, 1)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_menu_norm"]
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+texture = ExtResource("4_menu_norm")
+texture_margin_left = 24.0
+texture_margin_top = 14.0
+texture_margin_right = 24.0
+texture_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_menu_hov"]
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+texture = ExtResource("5_menu_hov")
+texture_margin_left = 24.0
+texture_margin_top = 14.0
+texture_margin_right = 24.0
+texture_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_menu_press"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+texture = ExtResource("6_menu_press")
+texture_margin_left = 24.0
+texture_margin_top = 14.0
+texture_margin_right = 24.0
+texture_margin_bottom = 14.0
+
 [node name="HUD" type="CanvasLayer" unique_id=1963854171]
 script = ExtResource("1_37p78")
 
-[node name="TurnFeedback" type="Label" parent="." unique_id=1678376099]
-offset_left = 556.0
-offset_top = 38.0
-offset_right = 712.0
-offset_bottom = 61.0
-text = "SISTEMA ATIVO: LÉO"
+[node name="BtnMenu" type="Button" parent="." unique_id=1678376099]
+offset_left = 545.0
+offset_top = 30.0
+offset_right = 735.0
+offset_bottom = 72.0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.95, 0.86, 0.68, 1)
+theme_override_colors/font_pressed_color = Color(0.76, 0.66, 0.5, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.84, 1)
+theme_override_colors/font_outline_color = Color(0.14, 0.08, 0.03, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_hov")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_a2258")
+text = "VOLTAR AO MENU"
 
 [node name="LeoUI" type="Control" parent="." unique_id=1742701663]
 layout_mode = 3

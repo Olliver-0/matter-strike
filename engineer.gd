@@ -25,6 +25,8 @@ signal died(player_id: int)
 @onready var glow: PointLight2D = $EnergyGlow
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var sfx_player: AudioStreamPlayer2D = $SfxPlayer
+@onready var turn_indicator: Node2D = get_node_or_null("TurnIndicator")
+@onready var turn_indicator_fill: Polygon2D = get_node_or_null("TurnIndicator/Fill")
 
 ## Som tocado no momento exato em que a vida chega a zero.
 @export var death_sound: AudioStream
@@ -58,6 +60,9 @@ func _ready() -> void:
 	
 	# Define o estado inicial da máquina de estados dependendo de quem é o jogador
 	set_state("idle", player_id == 1)
+	
+	GameState.turn_changed.connect(_on_turn_changed)
+	_update_turn_indicator(GameState.current_turn, false)
 
 
 ## Carrega as texturas corretas para a memória baseando-se no ID do jogador.
@@ -82,6 +87,29 @@ func _load_character_assets() -> void:
 func _setup_visuals() -> void:
 	glow.color = theme_color
 	glow.energy = 2.0
+	visual_body.self_modulate = Color(1.15, 1.15, 1.15, 1.0)
+	if turn_indicator_fill:
+		turn_indicator_fill.color = theme_color
+
+
+func _on_turn_changed(active_player_id: int) -> void:
+	_update_turn_indicator(active_player_id, true)
+
+
+func _update_turn_indicator(active_player_id: int, animate: bool = true) -> void:
+	if not turn_indicator:
+		return
+	var is_my_turn: bool = (active_player_id == player_id)
+	var target_scale: Vector2 = Vector2(1.35, 1.35) if is_my_turn else Vector2(0.75, 0.75)
+	var target_alpha: float = 1.0 if is_my_turn else 0.8
+	if animate and is_inside_tree():
+		var tween: Tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.set_parallel(true)
+		tween.tween_property(turn_indicator, "scale", target_scale, 0.2)
+		tween.tween_property(turn_indicator, "modulate:a", target_alpha, 0.2)
+	else:
+		turn_indicator.scale = target_scale
+		turn_indicator.modulate.a = target_alpha
 
 
 # ==========================================
@@ -126,7 +154,7 @@ func _get_snapped_world_position(grid_pos: Vector2) -> Vector2:
 	var inverted_y: int = (GameState.GRID_HEIGHT - 1) - int(grid_pos.y)
 	var target_x: float = (grid_pos.x * GameState.CELL_SIZE) + (GameState.CELL_SIZE / 2.0)
 	var fallback_y: float = (inverted_y * GameState.CELL_SIZE) + (GameState.CELL_SIZE / 2.0)
-	var foot_offset: float = 26.0 if player_id == 1 else 24.5
+	var foot_offset: float = 30.5 if player_id == 1 else 28.5
 	
 	if is_inside_tree() and get_world_2d() != null:
 		var space_state: PhysicsDirectSpaceState2D = get_world_2d().direct_space_state
@@ -154,6 +182,12 @@ func _get_snapped_world_position(grid_pos: Vector2) -> Vector2:
 					return Vector2(target_x, ground_y - foot_offset)
 					
 	return Vector2(target_x, fallback_y)
+
+
+## Retorna a posição exata no mundo (em pixels) onde a sola das botas pousaria na célula informada.
+func get_landing_foot_position(grid_pos: Vector2) -> Vector2:
+	var foot_offset: float = 30.5 if player_id == 1 else 28.5
+	return _get_snapped_world_position(grid_pos) + Vector2(0.0, foot_offset)
 
 
 ## Valida o custo de energia, calcula a conversão cartesiana e aciona a sequência assíncrona de portal.
@@ -234,6 +268,8 @@ func take_damage(amount: float) -> void:
 	# --- LÓGICA DE GAME OVER ---
 	if health <= 0.0:
 		died.emit(player_id) # NOVO: Avisa imediatamente o orquestrador que este jogador morreu
+		if turn_indicator:
+			turn_indicator.visible = false
 		print("Engenheiro ", player_id, " FOI ELIMINADO!")
 		
 		# Toca o som de morte

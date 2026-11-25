@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="matter-strike"
-run/main_scene="uid://d3cnsc3whb61b"
+run/main_scene="res://MainMenu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 MaterialsTable="*uid://b6uoayaul7v86"
 GameState="*uid://c2tcluviyhprt"
+MusicManager="*res://MusicManager.gd"
 
 [display]
 

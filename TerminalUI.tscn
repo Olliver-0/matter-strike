@@ -349,14 +349,6 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_yx6kh")
 text = "CONFIRMAR
 DISPARO"
 
-[node name="BtnRestart" type="Button" parent="." unique_id=1162354724]
-layout_mode = 0
-offset_left = 1095.0
-offset_top = 162.0
-offset_right = 1236.0
-offset_bottom = 193.0
-text = "Reiniciar Sistema"
-
 [node name="LblMoveCost" type="Label" parent="." unique_id=1424837180]
 layout_mode = 0
 offset_left = 805.0

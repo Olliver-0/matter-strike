@@ -2,11 +2,13 @@
 ## Gerencia barras independentes de Vida e Energia para cada personagem.
 class_name HUD extends CanvasLayer
 
+const MAIN_MENU_SCENE_PATH: String = "res://MainMenu.tscn"
+
 # ==========================================
 # 1. REFERÊNCIAS DA INTERFACE (UI Nodes)
 # ==========================================
 
-@onready var turn_feedback: Label = $TurnFeedback
+@onready var btn_menu: Button = $BtnMenu
 
 # --- UI do Léo ---
 @onready var leo_hp_bar: ProgressBar = $LeoUI/HPBar
@@ -22,9 +24,10 @@ class_name HUD extends CanvasLayer
 # ==========================================
 
 func _ready() -> void:
-	# 1. Conecta aos sinais globais do GameState
+	# 1. Conecta aos sinais globais do GameState e botão de Menu
 	GameState.energy_updated.connect(_on_energy_updated)
-	GameState.turn_changed.connect(_on_turn_changed)
+	if btn_menu:
+		btn_menu.pressed.connect(_on_btn_menu_pressed)
 	
 	# 2. Inicialização das Barras de Vida (HP)
 	leo_hp_bar.max_value = 100.0
@@ -40,8 +43,6 @@ func _ready() -> void:
 	# Puxa o estado atual direto da memória global
 	leo_energy_bar.value = GameState.players_energy[1]
 	sophie_energy_bar.value = GameState.players_energy[2]
-	
-	_on_turn_changed(GameState.current_turn)
 
 
 # ==========================================
@@ -67,11 +68,7 @@ func _on_energy_updated(player_id: int, new_energy_amount: int) -> void:
 	elif player_id == 2:
 		sophie_energy_bar.value = new_energy_amount
 
-## Destaca o nome de quem está jogando no momento no topo da tela.
-func _on_turn_changed(active_player_id: int) -> void:
-	if active_player_id == 1:
-		turn_feedback.text = "SISTEMA ATIVO: LÉO"
-		turn_feedback.modulate = Color(1.0, 0.5, 0.0) # Laranja
-	else:
-		turn_feedback.text = "SISTEMA ATIVO: SOPHIE"
-		turn_feedback.modulate = Color(0.04, 0.74, 0.81) # Ciano
+## Volta para a tela inicial do jogo resetando o estado da partida.
+func _on_btn_menu_pressed() -> void:
+	GameState.reset_state()
+	get_tree().change_scene_to_file(MAIN_MENU_SCENE_PATH)

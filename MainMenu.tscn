@@ -1,0 +1,336 @@
+[gd_scene format=3 uid="uid://cmn8k2p4x7q1v"]
+
+[ext_resource type="Script" path="res://MainMenu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cuh7glv5qpg3b" path="res://assets/menu.jpeg" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_start_normal.png" id="3_start_norm"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_start_hover.png" id="4_start_hov"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_start_pressed.png" id="5_start_press"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_normal.png" id="6_btn_norm"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_hover.png" id="7_btn_hov"]
+[ext_resource type="Texture2D" path="res://assets/menu_btn_pressed.png" id="8_btn_press"]
+[ext_resource type="Texture2D" path="res://assets/menu_modal_plate.png" id="9_modal"]
+[ext_resource type="Texture2D" path="res://assets/scroll_track.png" id="10_scr_trk"]
+[ext_resource type="Texture2D" path="res://assets/scroll_grabber.png" id="11_scr_grb"]
+[ext_resource type="Texture2D" path="res://assets/scroll_grabber_hl.png" id="12_scr_grb_hl"]
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.65, 1)
+colors = PackedColorArray(0.04, 0.024, 0.012, 0.82, 0.04, 0.024, 0.012, 0.45, 0.04, 0.024, 0.012, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+width = 480
+height = 16
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_start_norm"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+texture = ExtResource("3_start_norm")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_start_hov"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+texture = ExtResource("4_start_hov")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_start_press"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 8.0
+texture = ExtResource("5_start_press")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_norm"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+texture = ExtResource("6_btn_norm")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_hov"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+texture = ExtResource("7_btn_hov")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_press"]
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 8.0
+texture = ExtResource("8_btn_press")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_disabled"]
+content_margin_left = 18.0
+content_margin_top = 8.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+texture = ExtResource("8_btn_press")
+texture_margin_left = 26.0
+texture_margin_top = 18.0
+texture_margin_right = 26.0
+texture_margin_bottom = 18.0
+modulate_color = Color(0.65, 0.65, 0.65, 0.7)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_scroll_track"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+texture = ExtResource("10_scr_trk")
+texture_margin_left = 3.0
+texture_margin_top = 6.0
+texture_margin_right = 3.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_scroll_grab"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+texture = ExtResource("11_scr_grb")
+texture_margin_left = 3.0
+texture_margin_top = 6.0
+texture_margin_right = 3.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_scroll_grab_hl"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+texture = ExtResource("12_scr_grb_hl")
+texture_margin_left = 3.0
+texture_margin_top = 6.0
+texture_margin_right = 3.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="Theme" id="Theme_tutorial_scroll"]
+VScrollBar/styles/grabber = SubResource("StyleBoxTexture_scroll_grab")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_scroll_grab_hl")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_scroll_grab_hl")
+VScrollBar/styles/scroll = SubResource("StyleBoxTexture_scroll_track")
+
+[node name="MainMenu" type="Control" unique_id=2041187001]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="." unique_id=2041187002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LeftVignette" type="TextureRect" parent="." unique_id=2041187003]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 450.0
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+expand_mode = 1
+
+[node name="MenuButtons" type="VBoxContainer" parent="." unique_id=2041187004]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 54.0
+offset_top = -110.0
+offset_right = 334.0
+offset_bottom = 136.0
+grow_vertical = 2
+theme_override_constants/separation = 22
+
+[node name="BtnStart" type="Button" parent="MenuButtons" unique_id=2041187005]
+custom_minimum_size = Vector2(280, 68)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.96, 0.85, 1)
+theme_override_colors/font_pressed_color = Color(0.75, 0.82, 0.68, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.94, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.14, 0.1, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_start_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_start_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_start_hov")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "INICIAR JOGO"
+
+[node name="BtnTutorial" type="Button" parent="MenuButtons" unique_id=2041187006]
+custom_minimum_size = Vector2(280, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.86, 0.68, 1)
+theme_override_colors/font_pressed_color = Color(0.78, 0.68, 0.52, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.84, 1)
+theme_override_colors/font_outline_color = Color(0.14, 0.08, 0.03, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hov")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "TUTORIAL"
+
+[node name="BtnQuit" type="Button" parent="MenuButtons" unique_id=2041187007]
+custom_minimum_size = Vector2(280, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.82, 0.66, 1)
+theme_override_colors/font_pressed_color = Color(0.76, 0.62, 0.48, 1)
+theme_override_colors/font_hover_color = Color(1, 0.92, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.16, 0.07, 0.03, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hov")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "SAIR"
+
+[node name="TutorialOverlay" type="ColorRect" parent="." unique_id=2041187008]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.03, 0.02, 0.01, 0.78)
+
+[node name="TutorialPanel" type="TextureRect" parent="TutorialOverlay" unique_id=2041187009]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -280.0
+offset_right = 380.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_modal")
+expand_mode = 1
+
+[node name="TutorialTitle" type="Label" parent="TutorialOverlay/TutorialPanel" unique_id=2041187010]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 18.0
+offset_right = 726.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(0.95, 0.82, 0.56, 1)
+theme_override_colors/font_shadow_color = Color(0.12, 0.07, 0.02, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 22
+text = "TUTORIAL — 1. OBJETIVO E TURNOS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TutorialBody" type="RichTextLabel" parent="TutorialOverlay/TutorialPanel" unique_id=2041187011]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 84.0
+offset_right = 720.0
+offset_bottom = 468.0
+theme = SubResource("Theme_tutorial_scroll")
+theme_override_colors/default_color = Color(0.9, 0.82, 0.7, 1)
+theme_override_colors/font_shadow_color = Color(0.1, 0.06, 0.02, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/line_separation = 6
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
+bbcode_enabled = true
+scroll_active = true
+
+[node name="FooterButtons" type="HBoxContainer" parent="TutorialOverlay/TutorialPanel" unique_id=2041187012]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 496.0
+offset_right = 724.0
+offset_bottom = 542.0
+theme_override_constants/separation = 14
+
+[node name="BtnPrev" type="Button" parent="TutorialOverlay/TutorialPanel/FooterButtons" unique_id=2041187013]
+custom_minimum_size = Vector2(150, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.86, 0.68, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.48, 0.38, 0.6)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.84, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hov")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_btn_disabled")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "◀ ANTERIOR"
+
+[node name="LblPage" type="Label" parent="TutorialOverlay/TutorialPanel/FooterButtons" unique_id=2041187014]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.86, 0.74, 0.56, 1)
+theme_override_font_sizes/font_size = 15
+text = "Página 1 / 3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BtnNext" type="Button" parent="TutorialOverlay/TutorialPanel/FooterButtons" unique_id=2041187015]
+custom_minimum_size = Vector2(165, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.96, 0.85, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.94, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_start_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_start_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_start_hov")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "PRÓXIMO ▶"
+
+[node name="BtnCloseTutorial" type="Button" parent="TutorialOverlay/TutorialPanel/FooterButtons" unique_id=2041187016]
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.82, 0.66, 1)
+theme_override_colors/font_hover_color = Color(1, 0.92, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_norm")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_press")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hov")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "FECHAR"

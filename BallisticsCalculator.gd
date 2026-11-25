@@ -35,17 +35,13 @@ const MUZZLE_OFFSET_Y: float = -80.0
 ## Gravidade atual do setor da Estação Arquimedes. (Pode ser alterada por turno).
 var current_gravity: float = 980.0
 
-## Força e direção do vento atual atuando no Eixo X. (Negativo = Esquerda, Positivo = Direita).
-var current_wind: float = -350.0
-
 
 # ==========================================
 # 4. MÉTODOS PÚBLICOS (API do Motor)
 # ==========================================
 
-## Recebe os dados brutos da interface do jogador, aplica os limites físicos do canhão,
-## calcula a conversão de densidade e repassa a ordem validada para o gerador de tiro.
-func dispatch_shot(shooter: Node2D, target_coordinate: Vector2, input_type: String, input_value: float) -> void:
+## Calcula a massa e volume finais validados a partir da entrada do jogador e densidade atual.
+func resolve_matter_properties(input_type: String, input_value: float) -> Dictionary:
 	var material_data: Dictionary = MaterialsTable.get_current_properties()
 	var current_density: float = material_data["density"]
 	
@@ -61,10 +57,54 @@ func dispatch_shot(shooter: Node2D, target_coordinate: Vector2, input_type: Stri
 		var theoretical_volume: float = input_value / current_density
 		final_volume = clampf(theoretical_volume, min_volume, max_volume)
 		final_mass = final_volume * current_density 
-		
 	elif input_type == "VOLUME":
 		final_volume = clampf(input_value, min_volume, max_volume)
 		final_mass = final_volume * current_density
+		
+	return {"mass": final_mass, "volume": final_volume}
+
+
+## Simula a trajetória exata do projétil (gravidade, massa e volume) para desenhar a parábola de mira.
+func predict_trajectory(shooter: Node2D, target_coordinate: Vector2, input_type: String, input_value: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	if shooter == null:
+		return points
+		
+	var props: Dictionary = resolve_matter_properties(input_type, input_value)
+	var final_mass: float = props["mass"]
+	if final_mass <= 0.0:
+		return points
+		
+	var pos: Vector2 = shooter.global_position + Vector2(0, MUZZLE_OFFSET_Y)
+	var vel: Vector2 = _calculate_launch_velocity(pos, target_coordinate, final_mass)
+	
+	var delta: float = 1.0 / 60.0
+	var max_steps: int = 360 # Até 6 segundos de simulação
+	var sample_stride: int = 3 # Amostra a cada 0.05s para arco suave e pontilhado legível
+	
+	points.append(pos)
+	for step in range(1, max_steps + 1):
+		vel.y += current_gravity * delta
+		pos += vel * delta
+		
+		if step % sample_stride == 0:
+			points.append(pos)
+			
+		# Encerra a previsão quando o projétil sai da área jogável do mapa
+		if pos.y > 780.0 or pos.x < -40.0 or pos.x > 1320.0:
+			if step % sample_stride != 0:
+				points.append(pos)
+			break
+			
+	return points
+
+
+## Recebe os dados brutos da interface do jogador, aplica os limites físicos do canhão,
+## calcula a conversão de densidade e repassa a ordem validada para o gerador de tiro.
+func dispatch_shot(shooter: Node2D, target_coordinate: Vector2, input_type: String, input_value: float) -> void:
+	var props: Dictionary = resolve_matter_properties(input_type, input_value)
+	var final_mass: float = props["mass"]
+	var final_volume: float = props["volume"]
 		
 	# Log de validação no console para depuração matemática
 	print("--- NOVO DISPARO ---")
@@ -117,7 +157,6 @@ func _fire_shot(shooter: Node2D, target_coordinate: Vector2, input_mass: float, 
 		calculated_velocity, 
 		input_mass,
 		input_volume, 
-		current_wind, 
 		current_gravity,
 		shooter
 	)
